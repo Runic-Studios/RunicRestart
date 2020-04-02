@@ -19,7 +19,7 @@ public class RestartCommand implements CommandExecutor {
                     public void run() {
                         if (Plugin.passed < Plugin.finish) {
                             if (Plugin.passed % 10 == 0 || Plugin.passed <= 5) {
-                                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&c[&4Restart&c] &2Server restarting in &a" + (Plugin.passed - Plugin.finish) + " &2minutes"));
+                                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&c[&4Restart&c] &2Server restarting in &a" + (Plugin.finish - Plugin.passed) + " &2minutes"));
                             }
                             Plugin.passed++;
                         } else {

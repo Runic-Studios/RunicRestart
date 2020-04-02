@@ -1,5 +1,6 @@
 package com.runicrealms.runicrestart;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -15,6 +16,13 @@ public class Plugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        Bukkit.getPluginCommand("runicrestart").setExecutor(new RestartCommand());
+        Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+            @Override
+            public void run() {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "runicrestart 10");
+            }
+        }, 20L * 60L * 110L);
     }
 
     @Override
