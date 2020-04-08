@@ -2,3 +2,12 @@ restart-message-format: '&c[&4Restart&c] &2Server restarting in &a%time% &2%unit
 restart-cancel-message-format: '&c[&4Restart&c] &2Restart canceled by operator' # Restart canceled message
 restart-buffer: 110 # Minutes to wait after server startup for restart, put -1 for no restart
 restart-duration: 10 # How long the restart should last
+
+plugins-to-load:
+- "trade-market"
+- "guilds"
+
+plugins-to-save:
+- "guilds"
+- "core"
+- "bank"

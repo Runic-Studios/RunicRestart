@@ -1,15 +1,18 @@
-package com.runicrealms.runicrestart;
+package com.runicrealms.runicrestart.command;
 
+import com.runicrealms.runicrestart.Plugin;
+import com.runicrealms.runicrestart.api.ServerShutdownEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashSet;
 
-public class RestartCommand implements CommandExecutor {
+public class RunicRestartCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -62,7 +65,10 @@ public class RestartCommand implements CommandExecutor {
                                 }
                                 Plugin.passed++;
                             } else {
-                                Bukkit.shutdown();
+                                Bukkit.getPluginManager().callEvent(new ServerShutdownEvent());
+                                for (Player player : Bukkit.getOnlinePlayers()) {
+                                    player.kickPlayer(ChatColor.GREEN + "Server restarting, we'll be back up soon!");
+                                }
                             }
                         }
                     }, 0L, 20L * 60L);
