@@ -4,8 +4,10 @@ import com.runicrealms.runicrestart.api.ServerShutdownEvent;
 import com.runicrealms.runicrestart.command.RunicRestartCommand;
 import com.runicrealms.runicrestart.command.RunicStopCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -71,6 +73,13 @@ public class Plugin extends JavaPlugin implements Listener {
         tasks = null;
         counter = null;
         buffer = null;
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        if (pluginsToLoad.size() > 0) {
+            event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cERROR - you have joined before the runic realms plugins have loaded their data! PLEASE RELOG TO AVOID ISSUES!"));
+        }
     }
 
     public static Plugin getInstance() {
