@@ -25,12 +25,14 @@ public class Plugin extends JavaPlugin implements Listener {
 
     public static List<String> pluginsToLoad;
     public static List<String> pluginsToSave;
+    public static boolean hasWhitelist;
 
     @Override
     public void onEnable() {
         instance = this;
         this.getConfig().options().copyDefaults(true);
         this.saveDefaultConfig();
+        hasWhitelist = new Boolean(Bukkit.hasWhitelist());
         Bukkit.setWhitelist(true);
         pluginsToLoad = this.getConfig().getStringList("plugins-to-load");
         pluginsToSave = this.getConfig().getStringList("plugins-to-save");

@@ -8,7 +8,9 @@ public class RunicRestartApi {
     public static void markPluginLoaded(String key) {
         Plugin.pluginsToLoad.remove(key);
         if (Plugin.pluginsToLoad.size() == 0) {
-            Bukkit.setWhitelist(false);
+            if (Plugin.hasWhitelist == false) {
+                Bukkit.setWhitelist(false);
+            }
         }
     }
 
