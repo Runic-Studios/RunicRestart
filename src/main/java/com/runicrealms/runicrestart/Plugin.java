@@ -5,6 +5,7 @@ import com.runicrealms.runicrestart.command.RunicRestartCommand;
 import com.runicrealms.runicrestart.command.RunicStopCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -36,6 +37,9 @@ public class Plugin extends JavaPlugin implements Listener {
         this.saveDefaultConfig();
         hasWhitelist = new Boolean(Bukkit.hasWhitelist());
         Bukkit.setWhitelist(true);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.kickPlayer("The server is still loading!");
+        }
         pluginsToLoad = this.getConfig().getStringList("plugins-to-load");
         pluginsToSave = this.getConfig().getStringList("plugins-to-save");
         Bukkit.getPluginCommand("runicrestart").setExecutor(new RunicRestartCommand());
