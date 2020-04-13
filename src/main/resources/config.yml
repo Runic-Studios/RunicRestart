@@ -10,4 +10,3 @@ plugins-to-load:
 plugins-to-save:
 - "guilds"
 - "core"
-- "bank"
