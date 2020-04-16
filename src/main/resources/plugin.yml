@@ -10,3 +10,6 @@ commands:
   runicstop:
     description: Restarts the server
     aliases: [rstop]
+  runicsave:
+      description: Saves the server
+      aliases: [rsave]

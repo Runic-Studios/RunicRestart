@@ -2,6 +2,7 @@ package com.runicrealms.runicrestart;
 
 import com.runicrealms.runicrestart.api.ServerShutdownEvent;
 import com.runicrealms.runicrestart.command.RunicRestartCommand;
+import com.runicrealms.runicrestart.command.RunicSaveCommand;
 import com.runicrealms.runicrestart.command.RunicStopCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,6 +30,7 @@ public class Plugin extends JavaPlugin implements Listener {
     public static List<String> pluginsToLoad;
     public static List<String> pluginsToSave;
     public static boolean hasWhitelist;
+    public static boolean shouldShutdown = true;
 
     @Override
     public void onEnable() {
@@ -45,6 +47,8 @@ public class Plugin extends JavaPlugin implements Listener {
         Bukkit.getPluginCommand("runicrestart").setExecutor(new RunicRestartCommand());
         Bukkit.getPluginCommand("runicstop").setExecutor(new RunicStopCommand());
         Bukkit.getPluginCommand("rstop").setExecutor(new RunicStopCommand());
+        Bukkit.getPluginCommand("runicsave").setExecutor(new RunicSaveCommand());
+        Bukkit.getPluginCommand("rsave").setExecutor(new RunicSaveCommand());
         Bukkit.getPluginManager().registerEvents(this, this);
         if (this.getConfig().getInt("restart-buffer") >= 0) {
             buffer = Bukkit.getScheduler().runTaskLater(this, new Runnable() {
@@ -88,6 +92,18 @@ public class Plugin extends JavaPlugin implements Listener {
 
     public static Plugin getInstance() {
         return instance;
+    }
+
+    public static void startShutdown() {
+        Bukkit.getPluginManager().callEvent(new ServerShutdownEvent());
+        Bukkit.getScheduler().runTaskLater(getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                if (shouldShutdown) {
+                    Bukkit.shutdown();
+                }
+            }
+        }, 20 * 10);
     }
 
 }

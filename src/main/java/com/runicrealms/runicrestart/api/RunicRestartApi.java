@@ -21,7 +21,11 @@ public class RunicRestartApi {
         Plugin.pluginsToSave.remove(key);
         Bukkit.getLogger().log(Level.INFO, "[RunicRestart] " + key + " confirmed shutdown");
         if (Plugin.pluginsToSave.size() == 0) {
-            Bukkit.shutdown();
+            if (Plugin.shouldShutdown) {
+                Bukkit.shutdown();
+            } else {
+                Bukkit.getLogger().log(Level.INFO, "[RunicRestart] All plugins have confirmed shutdown! You are free to use console shutdown.");
+            }
         }
     }
 

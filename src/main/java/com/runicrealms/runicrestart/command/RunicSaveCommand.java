@@ -8,13 +8,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RunicStopCommand implements CommandExecutor {
+public class RunicSaveCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender.isOp()) {
+            Plugin.shouldShutdown = false;
             Plugin.startShutdown();
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aShutting server down safely..."));
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSaving and kicking players..."));
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.kickPlayer(ChatColor.GREEN + "Server restarting, we'll be back up soon!");
             }

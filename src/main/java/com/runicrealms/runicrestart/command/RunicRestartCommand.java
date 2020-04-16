@@ -1,7 +1,6 @@
 package com.runicrealms.runicrestart.command;
 
 import com.runicrealms.runicrestart.Plugin;
-import com.runicrealms.runicrestart.api.ServerShutdownEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -65,7 +64,7 @@ public class RunicRestartCommand implements CommandExecutor {
                                 }
                                 Plugin.passed++;
                             } else {
-                                Bukkit.getPluginManager().callEvent(new ServerShutdownEvent());
+                                Plugin.startShutdown();
                                 for (Player player : Bukkit.getOnlinePlayers()) {
                                     player.kickPlayer(ChatColor.GREEN + "Server restarting, we'll be back up soon!");
                                 }
