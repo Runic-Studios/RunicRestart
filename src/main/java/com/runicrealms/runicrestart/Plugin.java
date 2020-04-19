@@ -63,24 +63,26 @@ public class Plugin extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onShutdown(ServerShutdownEvent event) {
-        for (BukkitTask task : tasks) {
-            if (task.isCancelled() == false){
-                task.cancel();
+        try {
+            for (BukkitTask task : tasks) {
+                if (task.isCancelled() == false) {
+                    task.cancel();
+                }
             }
-        }
-        if (counter != null) {
-            if (!counter.isCancelled()) {
-                counter.cancel();
+            if (counter != null) {
+                if (!counter.isCancelled()) {
+                    counter.cancel();
+                }
             }
-        }
-        if (buffer != null) {
-            if (!buffer.isCancelled()) {
-                buffer.cancel();
+            if (buffer != null) {
+                if (!buffer.isCancelled()) {
+                    buffer.cancel();
+                }
             }
-        }
-        tasks = null;
-        counter = null;
-        buffer = null;
+            tasks = null;
+            counter = null;
+            buffer = null;
+        } catch (Exception exception) {}
     }
 
     @EventHandler
