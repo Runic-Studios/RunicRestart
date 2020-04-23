@@ -63,9 +63,10 @@ public class Plugin extends JavaPlugin implements Listener {
             Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
                 @Override
                 public void run() {
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("recurring-messages." + key + ".message")));
+                    List<String> messages = getConfig().getStringList("recurring-messages." + key + ".messages");
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', messages.get((int) Math.floor(Math.random() * messages.size()))));
                 }
-            }, 20L * this.getConfig().getInt("recurring-messages." + key + ".interval"), 20L *  this.getConfig().getInt("recurring-messages." + key + ".interval"));
+            }, 20L * this.getConfig().getInt("recurring-messages." + key + ".delay"), 20L *  this.getConfig().getInt("recurring-messages." + key + ".interval"));
         }
     }
 
