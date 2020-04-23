@@ -4,6 +4,7 @@ import com.runicrealms.runicrestart.api.ServerShutdownEvent;
 import com.runicrealms.runicrestart.command.RunicRestartCommand;
 import com.runicrealms.runicrestart.command.RunicSaveCommand;
 import com.runicrealms.runicrestart.command.RunicStopCommand;
+import io.lumine.xikage.mythicmobs.MythicMobs;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -106,6 +107,7 @@ public class Plugin extends JavaPlugin implements Listener {
     }
 
     public static void startShutdown() {
+        MythicMobs.inst().getMobManager().despawnAllMobs();
         Bukkit.getPluginManager().callEvent(new ServerShutdownEvent());
         Bukkit.getScheduler().runTaskLater(getInstance(), new Runnable() {
             @Override
