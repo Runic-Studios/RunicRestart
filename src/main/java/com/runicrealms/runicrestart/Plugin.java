@@ -59,6 +59,14 @@ public class Plugin extends JavaPlugin implements Listener {
                 }
             }, 20L * 60L * (this.getConfig().getInt("restart-buffer")));
         }
+        for (String key : this.getConfig().getConfigurationSection("recurring-messages").getKeys(false)) {
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("recurring-messages." + key + ".message")));
+                }
+            }, 20L * this.getConfig().getInt("recurring-messages." + key + ".interval"), 20L *  this.getConfig().getInt("recurring-messages." + key + ".interval"));
+        }
     }
 
     @EventHandler

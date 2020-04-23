@@ -1,5 +1,5 @@
-restart-message-format: '&c[&4Restart&c] &2Server restarting in &a%time% &2%unit%' # Restart message
-restart-cancel-message-format: '&c[&4Restart&c] &2Restart canceled by operator' # Restart canceled message
+restart-message-format: '&4[Notice] &cServer restarting in &e%time% &c%unit%!' # Restart message
+restart-cancel-message-format: '&4[Notice] &2Restart canceled by operator!' # Restart canceled message
 restart-buffer: 110 # Minutes to wait after server startup for restart, put -1 for no restart
 restart-duration: 10 # How long the restart should last
 
@@ -11,3 +11,8 @@ plugins-to-save:
 - "guilds"
 - "core"
 - "bank"
+
+recurring-messages:
+  1:
+    message: "&4[Notice] &cOur bank system is currently experiencing some issues. If you use it, &eyou may lose items&c."
+    interval: 300
