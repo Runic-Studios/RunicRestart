@@ -12,5 +12,7 @@ commands:
     description: Restarts the server
     aliases: [rstop]
   runicsave:
-      description: Saves the server
-      aliases: [rsave]
+    description: Saves the server
+    aliases: [rsave]
+  toggletips:
+    description: Toggles tips

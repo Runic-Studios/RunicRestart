@@ -12,7 +12,15 @@ plugins-to-save:
 - "core"
 - "bank"
 
-recurring-messages:
-  1:
-    message: "&4[Notice] &cOur bank system is currently experiencing some issues. If you use it, &eyou may lose items&c."
-    interval: 300
+tips:
+  messages:
+  - '&5[RunicRealms] &6» &aUse the quest book in your hotbar for info about your current quests!'
+  - '&5[RunicRealms] &6» &aWhen running dungeons, get some friends to help you-- it won''t be easy!'
+  - '&5[RunicRealms] &6» &aType &e/global &aor &e/local &ato enter different chat channels!'
+  - '&5[RunicRealms] &6» &aWhen you die, all items that are not in your hotbar or armor slots will be dropped on the floor!'
+  - '&5[RunicRealms] &6» &aCheck out our Discord server to seek help and more information!'
+  - '&5[RunicRealms] &6» &aType &e/map &ato get a link to our online map of the whole world!'
+  - '&5[RunicRealms] &6» &aVisit an Artifact Mage to reforge your artifacts and weapons into one new item!'
+  - '&5[RunicRealms] &6» &aUse &e/toggletips &ato stop seeing these messages!'
+  delay: 300
+  interval: 300
