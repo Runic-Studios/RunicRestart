@@ -16,3 +16,5 @@ commands:
     aliases: [rsave]
   toggletips:
     description: Toggles tips
+  maintenance:
+    description: Enters maintenance mode

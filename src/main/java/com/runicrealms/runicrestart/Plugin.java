@@ -1,6 +1,7 @@
 package com.runicrealms.runicrestart;
 
 import com.runicrealms.runicrestart.api.ServerShutdownEvent;
+import com.runicrealms.runicrestart.command.MaintenanceCommand;
 import com.runicrealms.runicrestart.command.RunicRestartCommand;
 import com.runicrealms.runicrestart.command.RunicSaveCommand;
 import com.runicrealms.runicrestart.command.RunicStopCommand;
@@ -70,6 +71,7 @@ public class Plugin extends JavaPlugin implements Listener {
         Bukkit.getPluginCommand("runicsave").setExecutor(new RunicSaveCommand());
         Bukkit.getPluginCommand("rsave").setExecutor(new RunicSaveCommand());
         Bukkit.getPluginCommand("toggletips").setExecutor(new ToggleTipsCommand());
+        Bukkit.getPluginCommand("maintenance").setExecutor(new MaintenanceCommand());
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new TipsManager(), this);
         TipsManager.setupTask();
