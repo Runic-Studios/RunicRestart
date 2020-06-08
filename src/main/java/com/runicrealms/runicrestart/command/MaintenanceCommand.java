@@ -34,6 +34,7 @@ public class MaintenanceCommand implements CommandExecutor {
                             if (countdown % 5 == 0 || countdown == 4 || countdown == 3 || countdown == 2 || countdown == 1) {
                                 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4[Notice] &cMaintenance in &e" + countdown + " minute" + (countdown == 1 ? "" : "s") + ((message != "") ? ": &c" + message : "")));
                                 if (countdown == 1) {
+                                    Bukkit.getScheduler().cancelTask(task);
                                     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
                                         @Override
                                         public void run() {
@@ -61,7 +62,7 @@ public class MaintenanceCommand implements CommandExecutor {
                                     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
                                         @Override
                                         public void run() {
-                                            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4[Notice] &cMaintenance in &e2 seconds" + ((message != "") ? ":&2" + message : "")));
+                                            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4[Notice] &cMaintenance in &e2 seconds" + ((message != "") ? ": &c" + message : "")));
                                         }
                                     }, 58 * 20);
                                     Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
@@ -79,9 +80,8 @@ public class MaintenanceCommand implements CommandExecutor {
                                                 }
                                             }
                                             Bukkit.setWhitelist(true);
-                                            Bukkit.getScheduler().cancelTask(task);
                                         }
-                                    }, 60 * 20);
+                                    }, 60 * 10);
                                 }
                             }
                             countdown--;
