@@ -10,11 +10,8 @@ public class RunicRestartApi {
     public static void markPluginLoaded(String key) {
         Plugin.pluginsToLoad.remove(key);
         Bukkit.getLogger().log(Level.INFO, "[RunicRestart] " + key + " confirmed startup");
-        if (Plugin.pluginsToLoad.size() == 0) {
-            if (Plugin.hasWhitelist == false) {
-                Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> Bukkit.setWhitelist(false));
-            }
-        }
+        if (Plugin.pluginsToLoad.size() <= 0)
+            Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> Bukkit.setWhitelist(false));
     }
 
     public static void markPluginSaved(String key) {
@@ -22,7 +19,7 @@ public class RunicRestartApi {
         Bukkit.getLogger().log(Level.INFO, "[RunicRestart] " + key + " confirmed shutdown");
         if (Plugin.pluginsToSave.size() == 0) {
             if (Plugin.shouldShutdown) {
-                Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> Bukkit.shutdown());
+                Bukkit.getScheduler().runTask(Plugin.getInstance(), Bukkit::shutdown);
             } else {
                 Bukkit.getLogger().log(Level.INFO, "[RunicRestart] All plugins have confirmed shutdown! You are free to use console shutdown.");
             }

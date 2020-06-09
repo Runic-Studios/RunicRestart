@@ -25,7 +25,7 @@ import java.util.Set;
 
 public class Plugin extends JavaPlugin implements Listener {
 
-    public static Set<BukkitTask> tasks = new HashSet<BukkitTask>();
+    public static Set<BukkitTask> tasks = new HashSet<>();
     public static int finish;
     public static int passed;
     public static BukkitTask counter;
@@ -58,7 +58,7 @@ public class Plugin extends JavaPlugin implements Listener {
             exception.printStackTrace();
         }
 
-        hasWhitelist = new Boolean(Bukkit.hasWhitelist());
+        hasWhitelist = Bukkit.hasWhitelist();
         Bukkit.setWhitelist(true);
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.kickPlayer("The server is still loading!");
@@ -76,12 +76,9 @@ public class Plugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new TipsManager(), this);
         TipsManager.setupTask();
         if (this.getConfig().getInt("restart-buffer") >= 0) {
-            buffer = Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-                @Override
-                public void run() {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "runicrestart " + (Plugin.getInstance().getConfig().getInt("restart-duration")));
-                    Plugin.buffer = null;
-                }
+            buffer = Bukkit.getScheduler().runTaskLater(this, () -> {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "runicrestart " + (Plugin.getInstance().getConfig().getInt("restart-duration")));
+                Plugin.buffer = null;
             }, 20L * 60L * (this.getConfig().getInt("restart-buffer")));
         }
     }
@@ -90,7 +87,7 @@ public class Plugin extends JavaPlugin implements Listener {
     public void onShutdown(ServerShutdownEvent event) {
         try {
             for (BukkitTask task : tasks) {
-                if (task.isCancelled() == false) {
+                if (!task.isCancelled()) {
                     task.cancel();
                 }
             }
@@ -113,7 +110,8 @@ public class Plugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (pluginsToLoad.size() > 0) {
-            event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cERROR - you have joined before the runic realms plugins have loaded their data! PLEASE RELOG TO AVOID ISSUES!"));
+            event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&',
+                    "&cERROR - you have joined before the runic realms plugins have loaded their data! Please relog to avoid data corruption."));
         }
     }
 
@@ -132,12 +130,9 @@ public class Plugin extends JavaPlugin implements Listener {
     public static void startShutdown() {
         MythicMobs.inst().getMobManager().despawnAllMobs();
         Bukkit.getPluginManager().callEvent(new ServerShutdownEvent());
-        Bukkit.getScheduler().runTaskLater(getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                if (shouldShutdown) {
-                    Bukkit.shutdown();
-                }
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
+            if (shouldShutdown) {
+                Bukkit.shutdown();
             }
         }, 20 * 10);
     }
