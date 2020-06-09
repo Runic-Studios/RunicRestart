@@ -29,6 +29,7 @@ public class MaintenanceCommand implements CommandExecutor {
                             if (first && countdown != 1) {
                                 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4[Notice] &cMaintenance in &e" + countdown + " minutes" + ((message != "") ? ": &c" + message : "")));
                                 first = false;
+                                countdown--;
                                 return;
                             }
                             if (countdown % 5 == 0 || countdown == 4 || countdown == 3 || countdown == 2 || countdown == 1) {
