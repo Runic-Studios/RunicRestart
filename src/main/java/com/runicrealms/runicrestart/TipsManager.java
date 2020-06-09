@@ -14,18 +14,15 @@ import java.util.Set;
 
 public class TipsManager implements Listener {
 
-    private static Set<Player> tips = new HashSet<Player>();
+    private static final Set<Player> tips = new HashSet<>();
     private static List<String> tipMessages;
 
     public static void setupTask() {
         tipMessages = Plugin.getInstance().getConfig().getStringList("tips.messages");
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(Plugin.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                String tip = ChatColor.translateAlternateColorCodes('&', tipMessages.get((int) Math.floor(Math.random() * tipMessages.size())));
-                for (Player player : tips) {
-                    player.sendMessage(tip);
-                }
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Plugin.getInstance(), () -> {
+            String tip = ChatColor.translateAlternateColorCodes('&', tipMessages.get((int) Math.floor(Math.random() * tipMessages.size())));
+            for (Player player : tips) {
+                player.sendMessage(tip);
             }
         }, Plugin.getInstance().getConfig().getInt("tips.delay") * 20, Plugin.getInstance().getConfig().getInt("tips.interval") * 20);
     }
@@ -51,9 +48,7 @@ public class TipsManager implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        if (tips.contains(event.getPlayer())) {
-            tips.remove(event.getPlayer());
-        }
+        tips.remove(event.getPlayer());
     }
 
     public static Set<Player> getTips() {
