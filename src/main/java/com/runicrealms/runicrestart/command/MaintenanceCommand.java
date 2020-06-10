@@ -82,7 +82,7 @@ public class MaintenanceCommand implements CommandExecutor {
                                             }
                                             Bukkit.setWhitelist(true);
                                         }
-                                    }, 60 * 10);
+                                    }, 60 * 20);
                                 }
                             }
                             countdown--;
