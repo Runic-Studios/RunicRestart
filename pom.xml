@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.runicrealms.runicrestart.Plugin</groupId>
 	<artifactId>RunicRestart</artifactId>
-	<version>1.15.2</version>
+	<version>1.16.4</version>
 	<name>RunicRestart</name>
 	<description>Runic Realms Restart Plugin</description>
 
