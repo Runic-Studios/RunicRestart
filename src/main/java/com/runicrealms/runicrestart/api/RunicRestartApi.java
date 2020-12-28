@@ -10,9 +10,11 @@ public class RunicRestartApi {
     public static void markPluginLoaded(String key) {
         Plugin.pluginsToLoad.remove(key);
         Bukkit.getLogger().log(Level.INFO, "[RunicRestart] " + key + " confirmed startup");
+        Bukkit.getPluginManager().callEvent(new PluginLoadedEvent(key));
         if (Plugin.pluginsToLoad.size() <= 0) {
             if (!Plugin.hasWhitelist) {
                 Bukkit.getScheduler().runTask(Plugin.getInstance(), () -> Bukkit.setWhitelist(false));
+                Bukkit.getPluginManager().callEvent(new PluginsReadyEvent());
             }
         }
     }

@@ -6,6 +6,7 @@ restart-duration: 10 # How long the restart should last
 plugins-to-load:
 - "trade-market"
 - "guilds"
+- "npcs"
 
 plugins-to-save:
 - "guilds"
