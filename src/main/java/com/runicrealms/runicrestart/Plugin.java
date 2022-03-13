@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -39,6 +40,8 @@ public class Plugin extends JavaPlugin implements Listener {
     public static List<String> pluginsToSave;
     public static boolean hasWhitelist;
     public static boolean shouldShutdown = true;
+
+    public static boolean isInMaintenance = false;
 
     @Override
     public void onEnable() {
@@ -108,10 +111,22 @@ public class Plugin extends JavaPlugin implements Listener {
     }
 
     @EventHandler
+    public void onPreJoin(AsyncPlayerPreLoginEvent event) {
+
+    }
+
+    @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (pluginsToLoad.size() > 0) {
             event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&',
                     "&cERROR - you have joined before the runic realms plugins have loaded their data! Please relog to avoid data corruption."));
+        }
+        if (buffer == null) {
+            if (Plugin.finish - Plugin.passed > 1) {
+                event.getPlayer().sendMessage(ChatColor.RED + "Warning: this server is restarting in " + (Plugin.finish - Plugin.passed) + " minutes!");
+            } else {
+                event.getPlayer().sendMessage(ChatColor.RED + "Warning: this server is restarting less than a minute!");
+            }
         }
     }
 
