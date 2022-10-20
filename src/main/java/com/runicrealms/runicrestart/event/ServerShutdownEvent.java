@@ -1,4 +1,4 @@
-package com.runicrealms.runicrestart.api;
+package com.runicrealms.runicrestart.event;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

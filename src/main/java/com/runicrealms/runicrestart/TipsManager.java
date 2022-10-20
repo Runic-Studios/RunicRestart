@@ -18,29 +18,30 @@ public class TipsManager implements Listener {
     private static List<String> tipMessages;
 
     public static void setupTask() {
-        tipMessages = Plugin.getInstance().getConfig().getStringList("tips.messages");
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(Plugin.getInstance(), () -> {
-            String tip = ChatColor.translateAlternateColorCodes('&', tipMessages.get((int) Math.floor(Math.random() * tipMessages.size())));
-            for (Player player : tips) {
-                player.sendMessage(tip);
-            }
-        }, Plugin.getInstance().getConfig().getInt("tips.delay") * 20, Plugin.getInstance().getConfig().getInt("tips.interval") * 20);
+        tipMessages = RunicRestart.getInstance().getConfig().getStringList("tips.messages");
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(RunicRestart.getInstance(), () -> {
+                    String tip = ChatColor.translateAlternateColorCodes('&', tipMessages.get((int) Math.floor(Math.random() * tipMessages.size())));
+                    for (Player player : tips) {
+                        player.sendMessage(tip);
+                    }
+                }, RunicRestart.getInstance().getConfig().getInt("tips.delay") * 20L,
+                RunicRestart.getInstance().getConfig().getInt("tips.interval") * 20L);
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(Plugin.getInstance(), () -> {
-            if (!Plugin.getDataFileConfiguration().contains("tips." + event.getPlayer().getUniqueId())) {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(RunicRestart.getInstance(), () -> {
+            if (!RunicRestart.getDataFileConfiguration().contains("tips." + event.getPlayer().getUniqueId())) {
                 try {
-                    Plugin.getDataFileConfiguration().set("tips." + event.getPlayer().getUniqueId(), true);
-                    Plugin.getDataFileConfiguration().save(Plugin.getDataFile());
+                    RunicRestart.getDataFileConfiguration().set("tips." + event.getPlayer().getUniqueId(), true);
+                    RunicRestart.getDataFileConfiguration().save(RunicRestart.getDataFile());
                     tips.add(event.getPlayer());
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
                 return;
             }
-            if (Plugin.getDataFileConfiguration().getBoolean("tips." + event.getPlayer().getUniqueId())) {
+            if (RunicRestart.getDataFileConfiguration().getBoolean("tips." + event.getPlayer().getUniqueId())) {
                 tips.add(event.getPlayer());
             }
         }, 1L);

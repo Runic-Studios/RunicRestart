@@ -1,13 +1,12 @@
 package com.runicrealms.runicrestart.command;
 
-import com.runicrealms.runicrestart.Plugin;
+import com.runicrealms.runicrestart.RunicRestart;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 public class MaintenanceCommand implements CommandExecutor {
 
@@ -23,7 +22,7 @@ public class MaintenanceCommand implements CommandExecutor {
                     String message = args.length > 1 ? combineArgs(args, 1) : "";
                     countdown = Integer.parseInt(args[0]);
                     first = true;
-                    task = Bukkit.getScheduler().scheduleSyncRepeatingTask(Plugin.getInstance(), new Runnable() {
+                    task = Bukkit.getScheduler().scheduleSyncRepeatingTask(RunicRestart.getInstance(), new Runnable() {
                         @Override
                         public void run() {
                             if (first && countdown != 1) {
@@ -36,43 +35,43 @@ public class MaintenanceCommand implements CommandExecutor {
                                 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4[Notice] &cMaintenance in &e" + countdown + " minute" + (countdown == 1 ? "" : "s") + ((message != "") ? ": &c" + message : "")));
                                 if (countdown == 1) {
                                     Bukkit.getScheduler().cancelTask(task);
-                                    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
+                                    Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), new Runnable() {
                                         @Override
                                         public void run() {
                                             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4[Notice] &cMaintenance in &e30 seconds" + ((message != "") ? ": &c" + message : "")));
                                         }
                                     }, 30 * 20);
-                                    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
+                                    Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), new Runnable() {
                                         @Override
                                         public void run() {
                                             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4[Notice] &cMaintenance in &e10 seconds" + ((message != "") ? ": &c" + message : "")));
                                         }
                                     }, 50 * 20);
-                                    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
+                                    Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), new Runnable() {
                                         @Override
                                         public void run() {
                                             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4[Notice] &cMaintenance in &e5 seconds" + ((message != "") ? ": &c" + message : "")));
                                         }
                                     }, 55 * 20);
-                                    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
+                                    Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), new Runnable() {
                                         @Override
                                         public void run() {
                                             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4[Notice] &cMaintenance in &e3 seconds" + ((message != "") ? ": &c" + message : "")));
                                         }
                                     }, 57 * 20);
-                                    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
+                                    Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), new Runnable() {
                                         @Override
                                         public void run() {
                                             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4[Notice] &cMaintenance in &e2 seconds" + ((message != "") ? ": &c" + message : "")));
                                         }
                                     }, 58 * 20);
-                                    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
+                                    Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), new Runnable() {
                                         @Override
                                         public void run() {
                                             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4[Notice] &cMaintenance in &e1 seconds" + ((message != "") ? ": &c" + message : "")));
                                         }
                                     }, 59 * 20);
-                                    Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), new Runnable() {
+                                    Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), new Runnable() {
                                         @Override
                                         public void run() {
                                             for (Player player : Bukkit.getOnlinePlayers()) {

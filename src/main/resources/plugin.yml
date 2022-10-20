@@ -1,19 +1,19 @@
 name: RunicRestart
 description: Runic Realms Restart Plugin, by Excel
 version: 1.0
-main: com.runicrealms.runicrestart.Plugin
-api-version: 1.13
-depend: [MythicMobs]
-loadbefore: [RunicCharacters, RunicTradeMarket, RunicGuilds]
+main: com.runicrealms.runicrestart.RunicRestart
+api-version: 1.16
+depend: [ MythicMobs ]
+loadbefore: [ RunicCharacters, RunicTradeMarket, RunicGuilds ]
 commands:
   runicrestart:
     description: Restarts the server
   runicstop:
     description: Restarts the server
-    aliases: [rstop]
+    aliases: [ rstop ]
   runicsave:
     description: Saves the server
-    aliases: [rsave]
+    aliases: [ rsave ]
   toggletips:
     description: Toggles tips
   maintenance:

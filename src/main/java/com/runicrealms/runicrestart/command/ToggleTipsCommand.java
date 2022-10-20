@@ -1,6 +1,6 @@
 package com.runicrealms.runicrestart.command;
 
-import com.runicrealms.runicrestart.Plugin;
+import com.runicrealms.runicrestart.RunicRestart;
 import com.runicrealms.runicrestart.TipsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,12 +17,12 @@ public class ToggleTipsCommand implements CommandExecutor {
             if (TipsManager.getTips().contains((Player) sender)) {
                 TipsManager.getTips().remove((Player) sender);
                 sender.sendMessage(ChatColor.GREEN + "Disabled tips! Use /toggletips to enable them.");
-                Bukkit.getScheduler().runTaskAsynchronously(Plugin.getInstance(), new Runnable() {
+                Bukkit.getScheduler().runTaskAsynchronously(RunicRestart.getInstance(), new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            Plugin.getDataFileConfiguration().set("tips." + ((Player) sender).getUniqueId(), false);
-                            Plugin.getDataFileConfiguration().save(Plugin.getDataFile());
+                            RunicRestart.getDataFileConfiguration().set("tips." + ((Player) sender).getUniqueId(), false);
+                            RunicRestart.getDataFileConfiguration().save(RunicRestart.getDataFile());
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }
@@ -31,12 +31,12 @@ public class ToggleTipsCommand implements CommandExecutor {
             } else {
                 TipsManager.getTips().add((Player) sender);
                 sender.sendMessage(ChatColor.GREEN + "Enabled tips! Use /toggletips to disable them.");
-                Bukkit.getScheduler().runTaskAsynchronously(Plugin.getInstance(), new Runnable() {
+                Bukkit.getScheduler().runTaskAsynchronously(RunicRestart.getInstance(), new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            Plugin.getDataFileConfiguration().set("tips." + ((Player) sender).getUniqueId(), true);
-                            Plugin.getDataFileConfiguration().save(Plugin.getDataFile());
+                            RunicRestart.getDataFileConfiguration().set("tips." + ((Player) sender).getUniqueId(), true);
+                            RunicRestart.getDataFileConfiguration().save(RunicRestart.getDataFile());
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }

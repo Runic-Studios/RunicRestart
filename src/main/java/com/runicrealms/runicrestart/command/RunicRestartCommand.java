@@ -1,6 +1,6 @@
 package com.runicrealms.runicrestart.command;
 
-import com.runicrealms.runicrestart.Plugin;
+import com.runicrealms.runicrestart.RunicRestart;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,39 +18,39 @@ public class RunicRestartCommand implements CommandExecutor {
         if (sender.isOp()) {
             if (args.length == 1) {
                 if (isInt(args[0])) {
-                    Plugin.finish = Integer.parseInt(args[0]);
-                    Plugin.passed = 0;
-                    Plugin.counter = Bukkit.getScheduler().runTaskTimer(Plugin.getInstance(), () -> {
-                        if (Plugin.passed < Plugin.finish) {
+                    RunicRestart.finish = Integer.parseInt(args[0]);
+                    RunicRestart.passed = 0;
+                    RunicRestart.counter = Bukkit.getScheduler().runTaskTimer(RunicRestart.getInstance(), () -> {
+                        if (RunicRestart.passed < RunicRestart.finish) {
                             boolean shouldDisplay = true;
-                            int time = Plugin.finish - Plugin.passed;
+                            int time = RunicRestart.finish - RunicRestart.passed;
 
                             if (time == 120 || time == 60 || time == 30 || time == 20 || time == 10 || time == 5 || time == 3 || time == 2) {
                                 Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                                        Plugin.getInstance().getConfig().getString("restart-message-format")
-                                                .replaceAll("%time%", (Plugin.finish - Plugin.passed) + "")
-                                                .replaceAll("%unit%", "minute" + (Plugin.finish - Plugin.passed > 1 ? "s" : ""))));
+                                        RunicRestart.getInstance().getConfig().getString("restart-message-format")
+                                                .replaceAll("%time%", (RunicRestart.finish - RunicRestart.passed) + "")
+                                                .replaceAll("%unit%", "minute" + (RunicRestart.finish - RunicRestart.passed > 1 ? "s" : ""))));
                             }
                             if (time == 1) {
-                                Plugin.tasks.add(Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                                        Plugin.getInstance().getConfig().getString("restart-message-format")
+                                RunicRestart.tasks.add(Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), () -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                                        RunicRestart.getInstance().getConfig().getString("restart-message-format")
                                                 .replaceAll("%time%", "30")
                                                 .replaceAll("%unit%", "seconds"))), 20L * 30L));
-                                Plugin.tasks.add(Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                                        Plugin.getInstance().getConfig().getString("restart-message-format")
+                                RunicRestart.tasks.add(Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), () -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                                        RunicRestart.getInstance().getConfig().getString("restart-message-format")
                                                 .replaceAll("%time%", "10")
                                                 .replaceAll("%unit%", "seconds"))), 20L * 50L));
                                 for (int i = 0; i < 5; i++) {
                                     final int current = i;
-                                    Plugin.tasks.add(Bukkit.getScheduler().runTaskLater(Plugin.getInstance(), () -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                                            Plugin.getInstance().getConfig().getString("restart-message-format")
+                                    RunicRestart.tasks.add(Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), () -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                                            RunicRestart.getInstance().getConfig().getString("restart-message-format")
                                                     .replaceAll("%time%", (5 - current) + "")
                                                     .replaceAll("%unit%", "second" + ((5 - current) > 1 ? "s" : "")))), 20L * (55L + current)));
                                 }
                             }
-                            Plugin.passed++;
+                            RunicRestart.passed++;
                         } else {
-                            Plugin.startShutdown();
+                            RunicRestart.startShutdown();
                             for (Player player : Bukkit.getOnlinePlayers()) {
                                 player.kickPlayer(ChatColor.GREEN + "Server restarting, we'll be back up soon!");
                             }
@@ -58,17 +58,17 @@ public class RunicRestartCommand implements CommandExecutor {
                     }, 0L, 20L * 60L);
                     sender.sendMessage(ChatColor.GREEN + "Started countdown.");
                 } else if (args[0].equalsIgnoreCase("cancel")) {
-                    if (Plugin.buffer != null) {
-                        Plugin.buffer = null;
-                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Plugin.getInstance().getConfig().getString("restart-cancel-message-format")));
-                    } else if (Plugin.counter != null) {
-                        Plugin.counter.cancel();
-                        for (BukkitTask task : Plugin.tasks) {
+                    if (RunicRestart.buffer != null) {
+                        RunicRestart.buffer = null;
+                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', RunicRestart.getInstance().getConfig().getString("restart-cancel-message-format")));
+                    } else if (RunicRestart.counter != null) {
+                        RunicRestart.counter.cancel();
+                        for (BukkitTask task : RunicRestart.tasks) {
                             task.cancel();
                         }
-                        Plugin.tasks = new HashSet<BukkitTask>();
-                        Plugin.counter = null;
-                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Plugin.getInstance().getConfig().getString("restart-cancel-message-format")));
+                        RunicRestart.tasks = new HashSet<BukkitTask>();
+                        RunicRestart.counter = null;
+                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', RunicRestart.getInstance().getConfig().getString("restart-cancel-message-format")));
                     } else {
                         sender.sendMessage(ChatColor.RED + "There isn't a restart to cancel.");
                     }
