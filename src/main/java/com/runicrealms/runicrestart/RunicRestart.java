@@ -2,6 +2,7 @@ package com.runicrealms.runicrestart;
 
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
+import com.runicrealms.runicrestart.api.RunicRestartApi;
 import com.runicrealms.runicrestart.command.*;
 import com.runicrealms.runicrestart.config.ConfigLoader;
 import com.runicrealms.runicrestart.event.ServerShutdownEvent;
@@ -24,27 +25,55 @@ import java.util.Set;
 
 public class RunicRestart extends JavaPlugin implements Listener {
 
-    private static RunicRestart instance;
-    private static PaperCommandManager commandManager;
-    private static FileConfiguration dataConfig;
-    private static File dataFile;
-
     public static Set<BukkitTask> tasks = new HashSet<>();
     public static int finish;
     public static int passed;
     public static BukkitTask counter;
     public static BukkitTask buffer;
-
     public static List<String> pluginsToLoad;
     public static boolean hasWhitelist;
     public static boolean shouldShutdown = true;
-
     public static boolean isInMaintenance = false;
+    private static RunicRestart instance;
+    private static PaperCommandManager commandManager;
+    private static RunicRestartApi runicRestartApi;
+    private static FileConfiguration dataConfig;
+    private static File dataFile;
+
+    public static RunicRestart getInstance() {
+        return instance;
+    }
+
+    public static RunicRestartApi getAPI() {
+        return runicRestartApi;
+    }
+
+    public static FileConfiguration getDataFileConfiguration() {
+        return dataConfig;
+    }
+
+    public static File getDataFile() {
+        return dataFile;
+    }
+
+    /**
+     * Cleanup task for server shutdown
+     */
+    public static void startShutdown() {
+        MythicMobs.inst().getMobManager().despawnAllMobs();
+        Bukkit.getPluginManager().callEvent(new ServerShutdownEvent());
+        Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
+            if (shouldShutdown) {
+                Bukkit.shutdown();
+            }
+        }, 20 * 10);
+    }
 
     @Override
     public void onEnable() {
         instance = this;
         commandManager = new PaperCommandManager(this);
+        runicRestartApi = new ShutdownManager();
         registerACFCommands();
         commandManager.getCommandConditions().addCondition("is-console-or-op", context -> {
             if (!(context.getIssuer().getIssuer() instanceof ConsoleCommandSender) && !context.getIssuer().getIssuer().isOp()) // ops can execute console commands
@@ -93,16 +122,19 @@ public class RunicRestart extends JavaPlugin implements Listener {
         }
     }
 
-    /**
-     * Initialize commands using Aikur's Command Framework
-     */
-    private void registerACFCommands() {
-        if (commandManager == null) {
-            Bukkit.getLogger().info(ChatColor.DARK_RED + "ERROR: FAILED TO INITIALIZE ACF COMMANDS");
-            return;
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        if (pluginsToLoad.size() > 0) {
+            event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&',
+                    "&cERROR - you have joined before the runic realms plugins have loaded their data! Please relog to avoid data corruption."));
         }
-        commandManager.registerCommand(new RunicSaveCMD());
-        commandManager.registerCommand(new RunicStopCMD());
+        if (buffer == null) {
+            if (RunicRestart.finish - RunicRestart.passed > 1) {
+                event.getPlayer().sendMessage(ChatColor.RED + "Warning: this server is restarting in " + (RunicRestart.finish - RunicRestart.passed) + " minutes!");
+            } else {
+                event.getPlayer().sendMessage(ChatColor.RED + "Warning: this server is restarting less than a minute!");
+            }
+        }
     }
 
     @EventHandler
@@ -131,44 +163,16 @@ public class RunicRestart extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if (pluginsToLoad.size() > 0) {
-            event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&',
-                    "&cERROR - you have joined before the runic realms plugins have loaded their data! Please relog to avoid data corruption."));
-        }
-        if (buffer == null) {
-            if (RunicRestart.finish - RunicRestart.passed > 1) {
-                event.getPlayer().sendMessage(ChatColor.RED + "Warning: this server is restarting in " + (RunicRestart.finish - RunicRestart.passed) + " minutes!");
-            } else {
-                event.getPlayer().sendMessage(ChatColor.RED + "Warning: this server is restarting less than a minute!");
-            }
-        }
-    }
-
-    public static RunicRestart getInstance() {
-        return instance;
-    }
-
-    public static FileConfiguration getDataFileConfiguration() {
-        return dataConfig;
-    }
-
-    public static File getDataFile() {
-        return dataFile;
-    }
-
     /**
-     * Cleanup task for server shutdown
+     * Initialize commands using Aikur's Command Framework
      */
-    public static void startShutdown() {
-        MythicMobs.inst().getMobManager().despawnAllMobs();
-        Bukkit.getPluginManager().callEvent(new ServerShutdownEvent());
-        Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
-            if (shouldShutdown) {
-                Bukkit.shutdown();
-            }
-        }, 20 * 10);
+    private void registerACFCommands() {
+        if (commandManager == null) {
+            Bukkit.getLogger().info(ChatColor.DARK_RED + "ERROR: FAILED TO INITIALIZE ACF COMMANDS");
+            return;
+        }
+        commandManager.registerCommand(new RunicSaveCMD());
+        commandManager.registerCommand(new RunicStopCMD());
     }
 
 }

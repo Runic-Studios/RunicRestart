@@ -1,36 +1,30 @@
 package com.runicrealms.runicrestart.api;
 
-import com.runicrealms.runicrestart.RunicRestart;
-import com.runicrealms.runicrestart.event.PluginLoadedEvent;
-import com.runicrealms.runicrestart.event.PluginsReadyEvent;
-import org.bukkit.Bukkit;
+import com.runicrealms.runicrestart.event.PreShutdownEvent;
 
-import java.util.logging.Level;
+public interface RunicRestartApi {
 
-public class RunicRestartApi {
+    /**
+     * @return the message sent when players are kicked for shutdown
+     */
+    String getShutdownMessage();
 
-    public static void markPluginLoaded(String key) {
-        RunicRestart.pluginsToLoad.remove(key);
-        Bukkit.getLogger().log(Level.INFO, "[RunicRestart] " + key + " confirmed startup");
-        if (!Bukkit.isPrimaryThread()) {
-            Bukkit.getScheduler().runTask(RunicRestart.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new PluginLoadedEvent(key));
-            });
-        } else {
-            Bukkit.getPluginManager().callEvent(new PluginLoadedEvent(key));
-        }
-        if (RunicRestart.pluginsToLoad.size() <= 0) {
-            if (!RunicRestart.hasWhitelist) {
-                if (!Bukkit.isPrimaryThread()) {
-                    Bukkit.getScheduler().runTask(RunicRestart.getInstance(), () -> {
-                        Bukkit.setWhitelist(false);
-                        Bukkit.getPluginManager().callEvent(new PluginsReadyEvent());
-                    });
-                } else {
-                    Bukkit.setWhitelist(false);
-                    Bukkit.getPluginManager().callEvent(new PluginsReadyEvent());
-                }
-            }
-        }
-    }
+    /**
+     * @return true if the server is currently shutting down
+     */
+    boolean isShuttingDown();
+
+    /**
+     * @param key of the plugin "core"
+     */
+    void markPluginLoaded(String key);
+
+    /**
+     * Used by other plugins as a handshake to confirm their data has been written to database
+     *
+     * @param event that triggered shutdown
+     * @param key   of the plugin "core"
+     * @return true if the plugin has saved
+     */
+    boolean markPluginSaved(PreShutdownEvent event, String key);
 }
