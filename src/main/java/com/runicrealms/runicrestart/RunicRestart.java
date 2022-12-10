@@ -9,8 +9,10 @@ import com.runicrealms.runicrestart.event.ServerShutdownEvent;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -120,6 +122,7 @@ public class RunicRestart extends JavaPlugin implements Listener {
                 RunicRestart.buffer = null;
             }, 20L * 60L * (this.getConfig().getInt("restart-buffer")));
         }
+        sanitizeMobs();
     }
 
     @EventHandler
@@ -173,6 +176,22 @@ public class RunicRestart extends JavaPlugin implements Listener {
         }
         commandManager.registerCommand(new RunicSaveCMD());
         commandManager.registerCommand(new RunicStopCMD());
+    }
+
+    /**
+     * Method to remove all vanilla mobs which may have spawned / been left over on startup
+     */
+    private void sanitizeMobs() {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(RunicRestart.getInstance(), () -> {
+            World world = Bukkit.getWorld("Alterra");
+            assert world != null;
+            for (LivingEntity livingEntity : world.getLivingEntities()) {
+                if (livingEntity instanceof Player) continue;
+                if (!MythicMobs.inst().getMobManager().isActiveMob(livingEntity.getUniqueId())) {
+                    Bukkit.getScheduler().runTask(RunicRestart.getInstance(), livingEntity::remove);
+                }
+            }
+        }, 0, 10 * 20L);
     }
 
 }
