@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -187,6 +188,7 @@ public class RunicRestart extends JavaPlugin implements Listener {
             assert world != null;
             for (LivingEntity livingEntity : world.getLivingEntities()) {
                 if (livingEntity instanceof Player) continue;
+                if (livingEntity instanceof AbstractHorse) continue;
                 if (!MythicMobs.inst().getMobManager().isActiveMob(livingEntity.getUniqueId())) {
                     Bukkit.getScheduler().runTask(RunicRestart.getInstance(), livingEntity::remove);
                 }
