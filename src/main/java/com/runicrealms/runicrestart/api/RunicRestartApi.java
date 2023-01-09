@@ -5,6 +5,11 @@ import com.runicrealms.runicrestart.event.PreShutdownEvent;
 public interface RunicRestartApi {
 
     /**
+     *
+     */
+    void beginShutdown();
+
+    /**
      * @return the message sent when players are kicked for shutdown
      */
     String getShutdownMessage();

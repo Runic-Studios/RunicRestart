@@ -59,19 +59,6 @@ public class RunicRestart extends JavaPlugin implements Listener {
         return dataFile;
     }
 
-    /**
-     * Cleanup task for server shutdown
-     */
-    public static void startShutdown() {
-        MythicMobs.inst().getMobManager().despawnAllMobs();
-        Bukkit.getPluginManager().callEvent(new ServerShutdownEvent());
-        Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
-            if (shouldShutdown) {
-                Bukkit.shutdown();
-            }
-        }, 20 * 10);
-    }
-
     @Override
     public void onEnable() {
         instance = this;

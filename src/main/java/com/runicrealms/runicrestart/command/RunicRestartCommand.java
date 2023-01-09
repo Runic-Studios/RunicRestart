@@ -6,12 +6,26 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashSet;
 
 public class RunicRestartCommand implements CommandExecutor {
+
+    /**
+     * Used for parsing command args
+     *
+     * @param number the string arg that was entered
+     * @return true if it is an int
+     */
+    private static boolean isInt(String number) {
+        try {
+            Integer.parseInt(number);
+            return true;
+        } catch (Exception exception) {
+            return false;
+        }
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -50,10 +64,7 @@ public class RunicRestartCommand implements CommandExecutor {
                             }
                             RunicRestart.passed++;
                         } else {
-                            RunicRestart.startShutdown();
-                            for (Player player : Bukkit.getOnlinePlayers()) {
-                                player.kickPlayer(ChatColor.GREEN + "Server restarting, we'll be back up soon!");
-                            }
+                            RunicRestart.getAPI().beginShutdown();
                         }
                     }, 0L, 20L * 60L);
                     sender.sendMessage(ChatColor.GREEN + "Started countdown.");
@@ -66,7 +77,7 @@ public class RunicRestartCommand implements CommandExecutor {
                         for (BukkitTask task : RunicRestart.tasks) {
                             task.cancel();
                         }
-                        RunicRestart.tasks = new HashSet<BukkitTask>();
+                        RunicRestart.tasks = new HashSet<>();
                         RunicRestart.counter = null;
                         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', RunicRestart.getInstance().getConfig().getString("restart-cancel-message-format")));
                     } else {
@@ -82,15 +93,6 @@ public class RunicRestartCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "You do not have permission to do that!");
         }
         return true;
-    }
-
-    private static boolean isInt(String number) {
-        try {
-            Integer.parseInt(number);
-            return true;
-        } catch (Exception exception) {
-            return false;
-        }
     }
 
 }

@@ -4,8 +4,10 @@ import com.runicrealms.runicrestart.api.RunicRestartApi;
 import com.runicrealms.runicrestart.event.PluginLoadedEvent;
 import com.runicrealms.runicrestart.event.PluginsReadyEvent;
 import com.runicrealms.runicrestart.event.PreShutdownEvent;
+import io.lumine.xikage.mythicmobs.MythicMobs;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
@@ -27,6 +29,28 @@ public class ShutdownManager implements Listener, RunicRestartApi {
      */
     public static void setIsShuttingDown(boolean isShuttingDown) {
         IS_SHUTTING_DOWN = isShuttingDown;
+    }
+
+    @Override
+    public void beginShutdown() {
+        ShutdownManager.setIsShuttingDown(true);
+        // Trigger redis save by kicking all players
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.kickPlayer(RunicRestart.getAPI().getShutdownMessage());
+        }
+        MythicMobs.inst().getMobManager().despawnAllMobs();
+        // Trigger pre shutdown
+        PreShutdownEvent preShutdownEvent = new PreShutdownEvent();
+        Bukkit.getPluginManager().callEvent(preShutdownEvent);
+        // Clear all mobs
+        MythicMobs.inst().getMobManager().despawnAllMobs();
+        // TODO: call this proper shutdown event in the correct place?
+//        Bukkit.getPluginManager().callEvent(new ServerShutdownEvent());
+//        Bukkit.getScheduler().runTaskLater(getInstance(), () -> {
+//            if (shouldShutdown) {
+//                Bukkit.shutdown();
+//            }
+//        }, 20 * 10);
     }
 
     @Override
