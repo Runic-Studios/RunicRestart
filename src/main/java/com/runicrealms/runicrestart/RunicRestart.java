@@ -12,7 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -170,17 +170,26 @@ public class RunicRestart extends JavaPlugin implements Listener {
      * Method to remove all vanilla mobs which may have spawned / been left over on startup
      */
     private void sanitizeMobs() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(RunicRestart.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(RunicRestart.getInstance(), () -> {
             World world = Bukkit.getWorld("Alterra");
             assert world != null;
             for (LivingEntity livingEntity : world.getLivingEntities()) {
                 if (livingEntity instanceof Player) continue;
-                if (livingEntity instanceof AbstractHorse) continue;
+                if (livingEntity instanceof ArmorStand) continue;
                 if (!MythicMobs.inst().getMobManager().isActiveMob(livingEntity.getUniqueId())) {
                     Bukkit.getScheduler().runTask(RunicRestart.getInstance(), livingEntity::remove);
                 }
             }
-        }, 0, 10 * 20L);
+            world = Bukkit.getWorld("dungeons");
+            assert world != null;
+            for (LivingEntity livingEntity : world.getLivingEntities()) {
+                if (livingEntity instanceof Player) continue;
+                if (livingEntity instanceof ArmorStand) continue;
+                if (!MythicMobs.inst().getMobManager().isActiveMob(livingEntity.getUniqueId())) {
+                    Bukkit.getScheduler().runTask(RunicRestart.getInstance(), livingEntity::remove);
+                }
+            }
+        }, 10 * 20L);
     }
 
 }
