@@ -16,7 +16,9 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -115,16 +117,20 @@ public class RunicRestart extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (pluginsToLoad.size() > 0) {
-            event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&',
-                    "&cERROR - you have joined before the runic realms plugins have loaded their data! Please relog to avoid data corruption."));
-        }
         if (buffer == null) {
             if (RunicRestart.finish - RunicRestart.passed > 1) {
                 event.getPlayer().sendMessage(ChatColor.RED + "Warning: this server is restarting in " + (RunicRestart.finish - RunicRestart.passed) + " minutes!");
             } else {
                 event.getPlayer().sendMessage(ChatColor.RED + "Warning: this server is restarting less than a minute!");
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPreJoin(AsyncPlayerPreLoginEvent event) {
+        if (pluginsToLoad.size() > 0) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
+                    ChatColor.YELLOW + "This server is restarting! Please rejoin in a moment.");
         }
     }
 

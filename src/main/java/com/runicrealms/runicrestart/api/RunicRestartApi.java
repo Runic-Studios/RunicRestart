@@ -5,7 +5,7 @@ import com.runicrealms.runicrestart.event.PreShutdownEvent;
 public interface RunicRestartApi {
 
     /**
-     *
+     * Begins the server shutdown process
      */
     void beginShutdown();
 
