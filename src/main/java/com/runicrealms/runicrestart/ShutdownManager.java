@@ -54,6 +54,11 @@ public class ShutdownManager implements Listener, RunicRestartApi {
     }
 
     @Override
+    public List<String> getPluginsToLoad() {
+        return RunicRestart.pluginsToLoad;
+    }
+
+    @Override
     public String getShutdownMessage() {
         return ChatColor.GREEN + "Server restart in progress! We'll be back soon.";
     }

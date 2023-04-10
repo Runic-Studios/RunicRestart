@@ -2,12 +2,21 @@ package com.runicrealms.runicrestart.api;
 
 import com.runicrealms.runicrestart.event.PreShutdownEvent;
 
+import java.util.List;
+
 public interface RunicRestartApi {
 
     /**
      * Begins the server shutdown process
      */
     void beginShutdown();
+
+    /**
+     * ?
+     *
+     * @return
+     */
+    List<String> getPluginsToLoad();
 
     /**
      * @return the message sent when players are kicked for shutdown
