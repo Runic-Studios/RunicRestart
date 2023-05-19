@@ -1,10 +1,10 @@
 package com.runicrealms.runicrestart.command;
 
-import com.runicrealms.libs.acf.BaseCommand;
-import com.runicrealms.libs.acf.annotation.CatchUnknown;
-import com.runicrealms.libs.acf.annotation.CommandAlias;
-import com.runicrealms.libs.acf.annotation.Conditions;
-import com.runicrealms.libs.acf.annotation.Default;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CatchUnknown;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Conditions;
+import co.aikar.commands.annotation.Default;
 import com.runicrealms.runicrestart.RunicRestart;
 import com.runicrealms.runicrestart.event.PreShutdownEvent;
 import org.bukkit.Bukkit;
