@@ -9,7 +9,6 @@ import com.runicrealms.runicrestart.command.RunicSaveCMD;
 import com.runicrealms.runicrestart.command.RunicStopCMD;
 import com.runicrealms.runicrestart.command.ToggleTipsCommand;
 import com.runicrealms.runicrestart.config.ConfigLoader;
-import com.runicrealms.runicrestart.event.ServerShutdownEvent;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,22 +22,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class RunicRestart extends JavaPlugin implements Listener {
 
-    public static Set<BukkitTask> tasks = new HashSet<>();
-    public static int finish;
-    public static int passed;
-    public static BukkitTask counter;
-    public static BukkitTask buffer;
+
     public static List<String> pluginsToLoad;
     public static boolean hasWhitelist;
     public static boolean shouldShutdown = true;
@@ -48,9 +39,14 @@ public class RunicRestart extends JavaPlugin implements Listener {
     private static RunicRestartApi runicRestartApi;
     private static FileConfiguration dataConfig;
     private static File dataFile;
+    private static RestartManager restartManager;
 
     public static RunicRestart getInstance() {
         return instance;
+    }
+
+    public static RestartManager getRestartManager() {
+        return restartManager;
     }
 
     public static RunicRestartApi getAPI() {
@@ -104,31 +100,17 @@ public class RunicRestart extends JavaPlugin implements Listener {
             player.kickPlayer("The server is still loading!");
         }
         pluginsToLoad = this.getConfig().getStringList("plugins-to-load");
-        Bukkit.getPluginCommand("runicrestart").setExecutor(new RunicRestartCommand());
         Bukkit.getPluginCommand("toggletips").setExecutor(new ToggleTipsCommand());
         Bukkit.getPluginCommand("maintenance").setExecutor(new MaintenanceCommand());
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new TipsManager(), this);
         TipsManager.setupTask();
-        if (this.getConfig().getInt("restart-buffer") >= 0) {
-            buffer = Bukkit.getScheduler().runTaskLater(this, () -> {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "runicrestart " + (RunicRestart.getInstance().getConfig().getInt("restart-duration")));
-                RunicRestart.buffer = null;
-            }, 20L * 60L * (this.getConfig().getInt("restart-buffer")));
-        }
+
+        restartManager = new RestartManager();
+
         sanitizeMobs();
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if (buffer == null) {
-            if (RunicRestart.finish - RunicRestart.passed > 1) {
-                event.getPlayer().sendMessage(ChatColor.RED + "Warning: this server is restarting in " + (RunicRestart.finish - RunicRestart.passed) + " minutes!");
-            } else {
-                event.getPlayer().sendMessage(ChatColor.RED + "Warning: this server is restarting less than a minute!");
-            }
-        }
-    }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPreJoin(AsyncPlayerPreLoginEvent event) {
@@ -138,31 +120,6 @@ public class RunicRestart extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
-    public void onShutdown(ServerShutdownEvent event) {
-        try {
-            for (BukkitTask task : tasks) {
-                if (!task.isCancelled()) {
-                    task.cancel();
-                }
-            }
-            if (counter != null) {
-                if (!counter.isCancelled()) {
-                    counter.cancel();
-                }
-            }
-            if (buffer != null) {
-                if (!buffer.isCancelled()) {
-                    buffer.cancel();
-                }
-            }
-            tasks = null;
-            counter = null;
-            buffer = null;
-        } catch (Exception ignored) {
-
-        }
-    }
 
     /**
      * Initialize commands using Aikur's Command Framework
@@ -174,6 +131,7 @@ public class RunicRestart extends JavaPlugin implements Listener {
         }
         commandManager.registerCommand(new RunicSaveCMD());
         commandManager.registerCommand(new RunicStopCMD());
+        commandManager.registerCommand(new RunicRestartCommand());
     }
 
     /**
