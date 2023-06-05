@@ -1,5 +1,6 @@
 package com.runicrealms.runicrestart;
 
+import com.runicrealms.plugin.common.RunicCommon;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,49 +12,44 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class TipsManager implements Listener {
 
-    private static final Set<Player> tips = new HashSet<>();
+    private static final Set<UUID> tips = new HashSet<>();
     private static List<String> tipMessages;
 
     public static void setupTask() {
         tipMessages = RunicRestart.getInstance().getConfig().getStringList("tips.messages");
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(RunicRestart.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(RunicRestart.getInstance(), () -> {
                     String tip = ChatColor.translateAlternateColorCodes('&', tipMessages.get((int) Math.floor(Math.random() * tipMessages.size())));
-                    for (Player player : tips) {
-                        player.sendMessage(tip);
+                    for (UUID uuid : tips) {
+                        Player player = Bukkit.getPlayer(uuid);
+                        if (player != null) player.sendMessage(tip);
                     }
                 }, RunicRestart.getInstance().getConfig().getInt("tips.delay") * 20L,
                 RunicRestart.getInstance().getConfig().getInt("tips.interval") * 20L);
     }
 
+    public static Set<UUID> getTips() {
+        return tips;
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(RunicRestart.getInstance(), () -> {
-            if (!RunicRestart.getDataFileConfiguration().contains("tips." + event.getPlayer().getUniqueId())) {
-                try {
-                    RunicRestart.getDataFileConfiguration().set("tips." + event.getPlayer().getUniqueId(), true);
-                    RunicRestart.getDataFileConfiguration().save(RunicRestart.getDataFile());
-                    tips.add(event.getPlayer());
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-                return;
+        RunicCommon.getLuckPermsAPI().retrieveData(event.getPlayer().getUniqueId()).thenAcceptAsync((data) -> {
+            if (data.containsKey("runic.tips") && data.getBoolean("runic.tips")) {
+                tips.add(event.getPlayer().getUniqueId());
+            } else if (!data.containsKey("runic.tips")) {
+                tips.add(event.getPlayer().getUniqueId());
+                RunicCommon.getLuckPermsAPI().savePayload(RunicCommon.getLuckPermsAPI().createPayload(event.getPlayer().getUniqueId(), (saveData) -> saveData.set("runic.tips", true)));
             }
-            if (RunicRestart.getDataFileConfiguration().getBoolean("tips." + event.getPlayer().getUniqueId())) {
-                tips.add(event.getPlayer());
-            }
-        }, 1L);
+        });
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        tips.remove(event.getPlayer());
-    }
-
-    public static Set<Player> getTips() {
-        return tips;
+        tips.remove(event.getPlayer().getUniqueId());
     }
 
 }

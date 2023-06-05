@@ -8,13 +8,11 @@ import com.runicrealms.runicrestart.command.RunicRestartCommand;
 import com.runicrealms.runicrestart.command.RunicSaveCMD;
 import com.runicrealms.runicrestart.command.RunicStopCMD;
 import com.runicrealms.runicrestart.command.ToggleTipsCommand;
-import com.runicrealms.runicrestart.config.ConfigLoader;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -24,7 +22,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.List;
 
 public class RunicRestart extends JavaPlugin implements Listener {
@@ -37,8 +34,6 @@ public class RunicRestart extends JavaPlugin implements Listener {
     private static RunicRestart instance;
     private static PaperCommandManager commandManager;
     private static RunicRestartApi runicRestartApi;
-    private static FileConfiguration dataConfig;
-    private static File dataFile;
     private static RestartManager restartManager;
 
     public static RunicRestart getInstance() {
@@ -51,14 +46,6 @@ public class RunicRestart extends JavaPlugin implements Listener {
 
     public static RunicRestartApi getAPI() {
         return runicRestartApi;
-    }
-
-    public static FileConfiguration getDataFileConfiguration() {
-        return dataConfig;
-    }
-
-    public static File getDataFile() {
-        return dataFile;
     }
 
     @Override
@@ -81,18 +68,6 @@ public class RunicRestart extends JavaPlugin implements Listener {
         });
         this.getConfig().options().copyDefaults(true);
         this.saveDefaultConfig();
-        try {
-            if (!this.getDataFolder().exists()) {
-                this.getDataFolder().mkdirs();
-            }
-            dataFile = new File(this.getDataFolder(), "data.yml");
-            if (!dataFile.exists()) {
-                dataFile.createNewFile();
-            }
-            dataConfig = ConfigLoader.getYamlConfigFile("data.yml", this.getDataFolder());
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
 
         hasWhitelist = Bukkit.hasWhitelist();
         Bukkit.setWhitelist(true);
@@ -100,7 +75,6 @@ public class RunicRestart extends JavaPlugin implements Listener {
             player.kickPlayer("The server is still loading!");
         }
         pluginsToLoad = this.getConfig().getStringList("plugins-to-load");
-        Bukkit.getPluginCommand("toggletips").setExecutor(new ToggleTipsCommand());
         Bukkit.getPluginCommand("maintenance").setExecutor(new MaintenanceCommand());
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new TipsManager(), this);
@@ -132,6 +106,7 @@ public class RunicRestart extends JavaPlugin implements Listener {
         commandManager.registerCommand(new RunicSaveCMD());
         commandManager.registerCommand(new RunicStopCMD());
         commandManager.registerCommand(new RunicRestartCommand());
+        commandManager.registerCommand(new ToggleTipsCommand());
     }
 
     /**

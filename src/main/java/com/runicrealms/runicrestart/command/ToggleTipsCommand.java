@@ -1,51 +1,28 @@
 package com.runicrealms.runicrestart.command;
 
-import com.runicrealms.runicrestart.RunicRestart;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CatchUnknown;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Default;
+import com.runicrealms.plugin.common.RunicCommon;
 import com.runicrealms.runicrestart.TipsManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ToggleTipsCommand implements CommandExecutor {
+@CommandAlias("toggletips")
+public class ToggleTipsCommand extends BaseCommand {
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-            if (TipsManager.getTips().contains((Player) sender)) {
-                TipsManager.getTips().remove((Player) sender);
-                sender.sendMessage(ChatColor.GREEN + "Disabled tips! Use /toggletips to enable them.");
-                Bukkit.getScheduler().runTaskAsynchronously(RunicRestart.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            RunicRestart.getDataFileConfiguration().set("tips." + ((Player) sender).getUniqueId(), false);
-                            RunicRestart.getDataFileConfiguration().save(RunicRestart.getDataFile());
-                        } catch (Exception exception) {
-                            exception.printStackTrace();
-                        }
-                    }
-                });
-            } else {
-                TipsManager.getTips().add((Player) sender);
-                sender.sendMessage(ChatColor.GREEN + "Enabled tips! Use /toggletips to disable them.");
-                Bukkit.getScheduler().runTaskAsynchronously(RunicRestart.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            RunicRestart.getDataFileConfiguration().set("tips." + ((Player) sender).getUniqueId(), true);
-                            RunicRestart.getDataFileConfiguration().save(RunicRestart.getDataFile());
-                        } catch (Exception exception) {
-                            exception.printStackTrace();
-                        }
-                    }
-                });
-            }
+    @Default
+    @CatchUnknown
+    public void onCommand(Player player) {
+        if (TipsManager.getTips().contains(player.getUniqueId())) {
+            TipsManager.getTips().remove(player.getUniqueId());
+            player.sendMessage(ChatColor.GREEN + "Disabled tips! Use /toggletips to enable them.");
+            RunicCommon.getLuckPermsAPI().savePayload(RunicCommon.getLuckPermsAPI().createPayload(player.getUniqueId(), (data) -> data.set("runic.tips", false)));
         } else {
-            sender.sendMessage("You can't run this command from console!");
+            TipsManager.getTips().add(player.getUniqueId());
+            player.sendMessage(ChatColor.GREEN + "Enabled tips! Use /toggletips to disable them.");
+            RunicCommon.getLuckPermsAPI().savePayload(RunicCommon.getLuckPermsAPI().createPayload(player.getUniqueId(), (data) -> data.set("runic.tips", true)));
         }
-        return true;
     }
 }
