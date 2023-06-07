@@ -3,6 +3,7 @@ package com.runicrealms.runicrestart.command;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Default;
 import com.runicrealms.runicrestart.RunicRestart;
@@ -13,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 
 @CommandAlias("runicsave|rsave")
+@CommandPermission("runic.op")
 public class RunicSaveCMD extends BaseCommand implements Listener {
 
     @Default

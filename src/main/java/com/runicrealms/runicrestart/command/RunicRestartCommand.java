@@ -3,6 +3,7 @@ package com.runicrealms.runicrestart.command;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
@@ -13,6 +14,7 @@ import org.bukkit.command.CommandSender;
 
 @CommandAlias("runicrestart")
 @Conditions("is-op")
+@CommandPermission("runic.op")
 public class RunicRestartCommand extends BaseCommand {
 
     /**
