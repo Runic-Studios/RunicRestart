@@ -30,6 +30,6 @@ tips:
     - '&5[Runic Realms] &6» &dType &e[item] &din chat while holding an item to link its tooltip!'
     - '&5[Runic Realms] &6» &dType &e[coords] &din chat while to show your location!'
     - '&5[Runic Realms] &6» &dType &e/whois <player> &dto get info about a player''s class!'
-    - '&5[Runic Realms] &6» &dType &e/roll &dto role the dice!'
+    - '&5[Runic Realms] &6» &dType &e/roll &dto roll the dice!'
   delay: 300
   interval: 300
