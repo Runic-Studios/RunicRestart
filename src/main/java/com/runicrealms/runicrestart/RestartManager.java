@@ -37,7 +37,7 @@ public class RestartManager implements Listener {
         counter = Bukkit.getScheduler().runTaskTimer(RunicRestart.getInstance(), () -> {
             if (passed < finish) {
                 int time = finish - passed;
-                if (time == 120 || time == 60 || time == 30 || time == 20 || time == 10 || time == 5 || time == 3 || time == 2) {
+                if (time == 120 || time == 60 || time == 30 || time == 20 || time == 10 || time == 5 || time == 3 || time == 2 || time == 1) {
                     Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
                             RunicRestart.getInstance().getConfig().getString("restart-message-format")
                                     .replaceAll("%time%", (finish - passed) + "")
