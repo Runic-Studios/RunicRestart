@@ -8,7 +8,7 @@ import com.runicrealms.runicrestart.command.RunicRestartCommand;
 import com.runicrealms.runicrestart.command.RunicSaveCMD;
 import com.runicrealms.runicrestart.command.RunicStopCMD;
 import com.runicrealms.runicrestart.command.ToggleTipsCommand;
-import io.lumine.xikage.mythicmobs.MythicMobs;
+import io.lumine.mythic.bukkit.MythicBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -112,6 +112,7 @@ public class RunicRestart extends JavaPlugin implements Listener {
     /**
      * Method to remove all vanilla mobs which may have spawned / been left over on startup
      */
+    // TODO: possible try with resources / removal of duplicated code
     private void sanitizeMobs() {
         Bukkit.getScheduler().runTaskLaterAsynchronously(RunicRestart.getInstance(), () -> {
             World world = Bukkit.getWorld("Alterra");
@@ -119,7 +120,7 @@ public class RunicRestart extends JavaPlugin implements Listener {
             for (LivingEntity livingEntity : world.getLivingEntities()) {
                 if (livingEntity instanceof Player) continue;
                 if (livingEntity instanceof ArmorStand) continue;
-                if (!MythicMobs.inst().getMobManager().isActiveMob(livingEntity.getUniqueId())) {
+                if (!MythicBukkit.inst().getMobManager().isActiveMob(livingEntity.getUniqueId())) {
                     Bukkit.getScheduler().runTask(RunicRestart.getInstance(), livingEntity::remove);
                 }
             }
@@ -128,7 +129,7 @@ public class RunicRestart extends JavaPlugin implements Listener {
             for (LivingEntity livingEntity : world.getLivingEntities()) {
                 if (livingEntity instanceof Player) continue;
                 if (livingEntity instanceof ArmorStand) continue;
-                if (!MythicMobs.inst().getMobManager().isActiveMob(livingEntity.getUniqueId())) {
+                if (!MythicBukkit.inst().getMobManager().isActiveMob(livingEntity.getUniqueId())) {
                     Bukkit.getScheduler().runTask(RunicRestart.getInstance(), livingEntity::remove);
                 }
             }
