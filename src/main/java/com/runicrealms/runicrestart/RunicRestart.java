@@ -114,18 +114,16 @@ public class RunicRestart extends JavaPlugin implements Listener {
      */
     // TODO: possible try with resources / removal of duplicated code
     private void sanitizeMobs() {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(RunicRestart.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), () -> {
             World world = Bukkit.getWorld("Alterra");
-            assert world != null;
-            for (LivingEntity livingEntity : world.getLivingEntities()) {
-                if (livingEntity instanceof Player) continue;
-                if (livingEntity instanceof ArmorStand) continue;
-                if (!MythicBukkit.inst().getMobManager().isActiveMob(livingEntity.getUniqueId())) {
-                    Bukkit.getScheduler().runTask(RunicRestart.getInstance(), livingEntity::remove);
-                }
-            }
+            removeMobs(world);
             world = Bukkit.getWorld("dungeons");
-            assert world != null;
+            removeMobs(world);
+        }, 10 * 20L);
+    }
+
+    private void removeMobs(World world) {
+        if(world != null) {
             for (LivingEntity livingEntity : world.getLivingEntities()) {
                 if (livingEntity instanceof Player) continue;
                 if (livingEntity instanceof ArmorStand) continue;
@@ -133,7 +131,7 @@ public class RunicRestart extends JavaPlugin implements Listener {
                     Bukkit.getScheduler().runTask(RunicRestart.getInstance(), livingEntity::remove);
                 }
             }
-        }, 10 * 20L);
+        }
     }
 
 }
