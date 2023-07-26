@@ -9,8 +9,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -77,7 +79,7 @@ public class ShutdownManager implements Listener, RunicRestartApi {
         } else {
             Bukkit.getPluginManager().callEvent(new PluginLoadedEvent(key));
         }
-        if (RunicRestart.pluginsToLoad.size() <= 0) {
+        if (RunicRestart.pluginsToLoad.size() == 0) {
             if (!RunicRestart.hasWhitelist) {
                 if (!Bukkit.isPrimaryThread()) {
                     Bukkit.getScheduler().runTask(RunicRestart.getInstance(), () -> {
@@ -118,5 +120,28 @@ public class ShutdownManager implements Listener, RunicRestartApi {
         if (IS_SHUTTING_DOWN) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Server shutting down");
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    private void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        if (!event.getPlayer().isOp()) {
+            return;
+        }
+
+        String message = event.getMessage().split(" ")[0];
+
+        if (message.length() <= 1) {
+            return;
+        }
+
+        String command = message.substring(1);
+
+        if (!command.equalsIgnoreCase("stop")) {
+            return;
+        }
+
+        event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&aShutting server down safely..."));
+        event.setCancelled(true);
+        this.beginShutdown();
     }
 }
