@@ -1,6 +1,6 @@
-package com.runicrealms.runicrestart.command;
+package com.runicrealms.plugin.runicrestart.command;
 
-import com.runicrealms.runicrestart.RunicRestart;
+import com.runicrealms.plugin.runicrestart.RunicRestart;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

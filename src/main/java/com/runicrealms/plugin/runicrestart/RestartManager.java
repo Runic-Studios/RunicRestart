@@ -1,6 +1,6 @@
-package com.runicrealms.runicrestart;
+package com.runicrealms.plugin.runicrestart;
 
-import com.runicrealms.runicrestart.event.ServerShutdownEvent;
+import com.runicrealms.plugin.runicrestart.event.ServerShutdownEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;

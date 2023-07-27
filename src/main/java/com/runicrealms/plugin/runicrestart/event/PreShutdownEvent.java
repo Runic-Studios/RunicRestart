@@ -1,6 +1,6 @@
-package com.runicrealms.runicrestart.event;
+package com.runicrealms.plugin.runicrestart.event;
 
-import com.runicrealms.runicrestart.RunicRestart;
+import com.runicrealms.plugin.runicrestart.RunicRestart;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

@@ -1,13 +1,13 @@
-package com.runicrealms.runicrestart;
+package com.runicrealms.plugin.runicrestart;
 
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
-import com.runicrealms.runicrestart.api.RunicRestartApi;
-import com.runicrealms.runicrestart.command.MaintenanceCommand;
-import com.runicrealms.runicrestart.command.RunicRestartCommand;
-import com.runicrealms.runicrestart.command.RunicSaveCMD;
-import com.runicrealms.runicrestart.command.RunicStopCMD;
-import com.runicrealms.runicrestart.command.ToggleTipsCommand;
+import com.runicrealms.plugin.runicrestart.api.RunicRestartApi;
+import com.runicrealms.plugin.runicrestart.command.MaintenanceCommand;
+import com.runicrealms.plugin.runicrestart.command.RunicRestartCommand;
+import com.runicrealms.plugin.runicrestart.command.RunicSaveCMD;
+import com.runicrealms.plugin.runicrestart.command.RunicStopCMD;
+import com.runicrealms.plugin.runicrestart.command.ToggleTipsCommand;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

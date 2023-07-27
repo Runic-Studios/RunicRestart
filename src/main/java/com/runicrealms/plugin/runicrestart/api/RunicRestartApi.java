@@ -1,6 +1,6 @@
-package com.runicrealms.runicrestart.api;
+package com.runicrealms.plugin.runicrestart.api;
 
-import com.runicrealms.runicrestart.event.PreShutdownEvent;
+import com.runicrealms.plugin.runicrestart.event.PreShutdownEvent;
 
 import java.util.List;
 

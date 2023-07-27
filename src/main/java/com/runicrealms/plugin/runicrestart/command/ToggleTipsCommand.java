@@ -1,11 +1,11 @@
-package com.runicrealms.runicrestart.command;
+package com.runicrealms.plugin.runicrestart.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import com.runicrealms.plugin.common.RunicCommon;
-import com.runicrealms.runicrestart.TipsManager;
+import com.runicrealms.plugin.runicrestart.TipsManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

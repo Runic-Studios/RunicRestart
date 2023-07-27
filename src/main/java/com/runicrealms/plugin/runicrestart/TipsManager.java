@@ -1,4 +1,4 @@
-package com.runicrealms.runicrestart;
+package com.runicrealms.plugin.runicrestart;
 
 import com.runicrealms.plugin.common.RunicCommon;
 import org.bukkit.Bukkit;

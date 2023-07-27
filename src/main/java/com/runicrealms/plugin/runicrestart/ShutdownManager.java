@@ -1,9 +1,9 @@
-package com.runicrealms.runicrestart;
+package com.runicrealms.plugin.runicrestart;
 
-import com.runicrealms.runicrestart.api.RunicRestartApi;
-import com.runicrealms.runicrestart.event.PluginLoadedEvent;
-import com.runicrealms.runicrestart.event.PluginsReadyEvent;
-import com.runicrealms.runicrestart.event.PreShutdownEvent;
+import com.runicrealms.plugin.runicrestart.api.RunicRestartApi;
+import com.runicrealms.plugin.runicrestart.event.PluginLoadedEvent;
+import com.runicrealms.plugin.runicrestart.event.PluginsReadyEvent;
+import com.runicrealms.plugin.runicrestart.event.PreShutdownEvent;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

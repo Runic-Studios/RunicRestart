@@ -1,4 +1,4 @@
-package com.runicrealms.runicrestart.config;
+package com.runicrealms.plugin.runicrestart.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

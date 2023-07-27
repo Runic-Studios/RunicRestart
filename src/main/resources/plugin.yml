@@ -1,7 +1,7 @@
 name: RunicRestart
 description: Runic Realms Restart Plugin, by Excel
 version: 1.0
-main: com.runicrealms.runicrestart.RunicRestart
+main: com.runicrealms.plugin.runicrestart.RunicRestart
 api-version: 1.16
 depend: [ MythicMobs ]
 commands:
