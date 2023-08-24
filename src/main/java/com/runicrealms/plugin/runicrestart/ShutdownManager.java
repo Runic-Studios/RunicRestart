@@ -7,6 +7,7 @@ import com.runicrealms.plugin.runicrestart.event.PreShutdownEvent;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -131,15 +132,15 @@ public class ShutdownManager implements Listener, RunicRestartApi {
             return;
         }
 
-        this.stopLogic(event, event.getMessage());
+        this.stopLogic(event, event.getMessage(), event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     private void onServerCommand(ServerCommandEvent event) {
-        this.stopLogic(event, event.getCommand());
+        this.stopLogic(event, event.getCommand(), event.getSender());
     }
 
-    private void stopLogic(@NotNull Cancellable cancellable, @NotNull String rawMessage) {
+    private void stopLogic(@NotNull Cancellable cancellable, @NotNull String rawMessage, @NotNull CommandSender sender) {
         String message = rawMessage.split(" ")[0];
 
         if (message.length() <= 1) {
@@ -153,6 +154,7 @@ public class ShutdownManager implements Listener, RunicRestartApi {
         }
 
         cancellable.setCancelled(true);
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aShutting server down safely..."));
         this.beginShutdown();
     }
 }
