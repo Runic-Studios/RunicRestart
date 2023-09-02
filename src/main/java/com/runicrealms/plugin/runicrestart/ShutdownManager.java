@@ -120,7 +120,7 @@ public class ShutdownManager implements Listener, RunicRestartApi {
     }
 
     @EventHandler
-    public void onServerJoin(AsyncPlayerPreLoginEvent event) {
+    private void onServerJoin(AsyncPlayerPreLoginEvent event) {
         if (IS_SHUTTING_DOWN) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Server shutting down");
         }

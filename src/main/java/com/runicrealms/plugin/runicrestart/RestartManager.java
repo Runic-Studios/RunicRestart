@@ -13,13 +13,16 @@ import java.util.Set;
 
 public class RestartManager implements Listener {
 
-    private int finish; // When we will restart (in how many seconds since start of counter)
-    private int passed; // How many seconds have passed since start of counter
-    private BukkitTask counter; // The counter object that loops every second until the decrement time
+    private final long start; //time the server restart manager was init
+    private int finish; // When we will restart (in how many minutes since start of counter)
+    private int passed; // How many minutes have passed since start of counter
+    private BukkitTask counter; // The counter object that loops every minute until the decrement time
     private BukkitTask buffer; // The buffer timer that waits until the counter object should be initialized
     private Set<BukkitTask> tasks = new HashSet<>(); // set of tasks that represent the last sub-1-minute countdown
 
     public RestartManager() {
+        this.start = System.currentTimeMillis();
+
         if (RunicRestart.getInstance().getConfig().getInt("restart-buffer") >= 0) {
             buffer = Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), () -> {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "runicrestart " + (RunicRestart.getInstance().getConfig().getInt("restart-duration")));
@@ -78,6 +81,9 @@ public class RestartManager implements Listener {
         }
         tasks.forEach(BukkitTask::cancel);
         tasks.clear();
+
+        this.finish = 0;
+        this.passed = 0;
     }
 
     @EventHandler
@@ -121,4 +127,7 @@ public class RestartManager implements Listener {
         return RunicRestart.getInstance().getConfig().getInt("restart-buffer") + RunicRestart.getInstance().getConfig().getInt("restart-duration");
     }
 
+    public int getMinutesBeforeRestart() {
+        return this.finish != 0 ? this.finish - this.passed : this.getDefaultLifetime() - (int) ((System.currentTimeMillis() - this.start) / 60000);
+    }
 }
