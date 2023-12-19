@@ -37,7 +37,7 @@ public class TipsManager implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        RunicCommon.getLuckPermsAPI().retrieveData(event.getPlayer().getUniqueId()).then((data) -> {
+        RunicCommon.getLuckPermsAPI().retrieveData(event.getPlayer().getUniqueId()).thenAccept((data) -> {
             if (data.containsKey("runic.tips") && data.getBoolean("runic.tips")) {
                 tips.add(event.getPlayer().getUniqueId());
             } else if (!data.containsKey("runic.tips")) {
