@@ -3,18 +3,6 @@ restart-cancel-message-format: '&4[Notice] &6» &2Restart canceled by operator!'
 restart-buffer: 240 # Minutes to wait after server startup for restart, put -1 for no restart
 restart-duration: 60 # How long the restart should last
 
-plugins-to-load:
-  - "core"
-
-plugins-to-save:
-  - "guilds"
-  - "core"
-  - "bank"
-  - "professions"
-  - "items"
-  - "quests"
-  - "achievements"
-
 tips:
   messages:
     - '&5[Runic Realms] &6» &dUse the quest book in your hotbar for info about your current quests!'

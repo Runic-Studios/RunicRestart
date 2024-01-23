@@ -2,39 +2,28 @@ package com.runicrealms.plugin.runicrestart;
 
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
-import com.runicrealms.plugin.runicrestart.api.RunicRestartApi;
-import com.runicrealms.plugin.runicrestart.command.MaintenanceCommand;
+import com.runicrealms.plugin.common.event.RunicShutdownEvent;
 import com.runicrealms.plugin.runicrestart.command.RunicRestartCommand;
-import com.runicrealms.plugin.runicrestart.command.RunicSaveCMD;
 import com.runicrealms.plugin.runicrestart.command.RunicStopCMD;
 import com.runicrealms.plugin.runicrestart.command.ToggleTipsCommand;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.List;
 
 public class RunicRestart extends JavaPlugin implements Listener {
 
 
-    public static List<String> pluginsToLoad;
-    public static boolean hasWhitelist;
-    public static boolean shouldShutdown = true;
-    public static boolean isInMaintenance = false;
     private static RunicRestart instance;
     private static PaperCommandManager commandManager;
-    private static RunicRestartApi runicRestartApi;
     private static RestartManager restartManager;
+    private static TipsManager tipsManager;
+    private static WhitelistHandler whitelistHandler;
 
     public static RunicRestart getInstance() {
         return instance;
@@ -44,16 +33,19 @@ public class RunicRestart extends JavaPlugin implements Listener {
         return restartManager;
     }
 
-    public static RunicRestartApi getAPI() {
-        return runicRestartApi;
+    public static TipsManager getTipsManager() {
+        return tipsManager;
     }
 
     @Override
     public void onEnable() {
         instance = this;
+
+        this.getConfig().options().copyDefaults(true);
+        this.saveDefaultConfig();
+
         commandManager = new PaperCommandManager(this);
-        runicRestartApi = new ShutdownManager();
-        registerACFCommands();
+
         commandManager.getCommandConditions().addCondition("is-console-or-op", context -> {
             if (!(context.getIssuer().getIssuer() instanceof ConsoleCommandSender) && !context.getIssuer().getIssuer().isOp()) // ops can execute console commands
                 throw new ConditionFailedException("Only the console may run this command!");
@@ -66,53 +58,41 @@ public class RunicRestart extends JavaPlugin implements Listener {
             if (!(context.getIssuer().getIssuer() instanceof Player))
                 throw new ConditionFailedException("This command cannot be run from console!");
         });
-        this.getConfig().options().copyDefaults(true);
-        this.saveDefaultConfig();
 
-        hasWhitelist = Bukkit.hasWhitelist();
-        Bukkit.setWhitelist(true);
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.kickPlayer("The server is still loading!");
-        }
-        pluginsToLoad = this.getConfig().getStringList("plugins-to-load");
-        Bukkit.getPluginCommand("maintenance").setExecutor(new MaintenanceCommand());
-        Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getPluginManager().registerEvents(new TipsManager(), this);
-        TipsManager.setupTask();
+        commandManager.registerCommand(new RunicStopCMD());
+        commandManager.registerCommand(new RunicRestartCommand());
+        commandManager.registerCommand(new ToggleTipsCommand());
 
+        // deprecated
+//        Bukkit.getPluginCommand("maintenance").setExecutor(new MaintenanceCommand());
+
+        tipsManager = new TipsManager();
+        new StopCommandHandler();
+        whitelistHandler = new WhitelistHandler();
         restartManager = new RestartManager();
+
+        Bukkit.getPluginManager().registerEvents(this, this);
 
         sanitizeMobs();
     }
 
-
-    @EventHandler(priority = EventPriority.LOW)
-    public void onPreJoin(AsyncPlayerPreLoginEvent event) {
-        if (pluginsToLoad.size() > 0) {
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-                    ChatColor.YELLOW + "This server is restarting! Please rejoin in a moment.");
-        }
+    @Override
+    public void onDisable(){
+        whitelistHandler.onDisable();
     }
 
-
     /**
-     * Initialize commands using Aikur's Command Framework
+     * Attempts a safe runic shutdown
      */
-    private void registerACFCommands() {
-        if (commandManager == null) {
-            Bukkit.getLogger().info(ChatColor.DARK_RED + "ERROR: FAILED TO INITIALIZE ACF COMMANDS");
-            return;
-        }
-        commandManager.registerCommand(new RunicSaveCMD());
-        commandManager.registerCommand(new RunicStopCMD());
-        commandManager.registerCommand(new RunicRestartCommand());
-        commandManager.registerCommand(new ToggleTipsCommand());
+    public static void shutdown() {
+        Bukkit.getScheduler().runTask(RunicRestart.getInstance(), () -> Bukkit.getPluginManager().callEvent(new RunicShutdownEvent()));
     }
 
     /**
      * Method to remove all vanilla mobs which may have spawned / been left over on startup
      */
     // TODO: possible try with resources / removal of duplicated code
+    // TODO: move to a different plugin
     private void sanitizeMobs() {
         Bukkit.getScheduler().runTaskLater(RunicRestart.getInstance(), () -> {
             World world = Bukkit.getWorld("Alterra");

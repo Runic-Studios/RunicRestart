@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public class MaintenanceCommand implements CommandExecutor {
 
     private static int countdown;

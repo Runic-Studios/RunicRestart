@@ -19,7 +19,7 @@ public class RunicStopCMD extends BaseCommand {
     @Conditions("is-op")
     public void onCommand(CommandSender commandSender) {
         commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aShutting server down safely..."));
-        RunicRestart.getAPI().beginShutdown();
+        RunicRestart.shutdown();
     }
 
 }

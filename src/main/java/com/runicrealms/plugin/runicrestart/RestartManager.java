@@ -1,6 +1,5 @@
 package com.runicrealms.plugin.runicrestart;
 
-import com.runicrealms.plugin.runicrestart.event.ServerShutdownEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -65,7 +64,7 @@ public class RestartManager implements Listener {
                 }
                 passed++;
             } else {
-                RunicRestart.getAPI().beginShutdown();
+                RunicRestart.shutdown();
             }
         }, 0L, 20L * 60L);
     }
@@ -97,8 +96,7 @@ public class RestartManager implements Listener {
         }
     }
 
-    @EventHandler
-    public void onShutdown(ServerShutdownEvent event) {
+    public void onShutdown() {
         try {
             for (BukkitTask task : tasks) {
                 if (!task.isCancelled()) {

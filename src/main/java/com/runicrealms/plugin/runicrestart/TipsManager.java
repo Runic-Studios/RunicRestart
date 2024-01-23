@@ -1,5 +1,6 @@
 package com.runicrealms.plugin.runicrestart;
 
+import com.runicrealms.plugin.common.RunicAPI;
 import com.runicrealms.plugin.common.RunicCommon;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,10 +17,11 @@ import java.util.UUID;
 
 public class TipsManager implements Listener {
 
-    private static final Set<UUID> tips = new HashSet<>();
-    private static List<String> tipMessages;
+    private final Set<UUID> tips = new HashSet<>();
+    private final List<String> tipMessages;
 
-    public static void setupTask() {
+    public TipsManager() {
+        Bukkit.getPluginManager().registerEvents(this, RunicRestart.getInstance());
         tipMessages = RunicRestart.getInstance().getConfig().getStringList("tips.messages");
         Bukkit.getScheduler().runTaskTimerAsynchronously(RunicRestart.getInstance(), () -> {
                     String tip = ChatColor.translateAlternateColorCodes('&', tipMessages.get((int) Math.floor(Math.random() * tipMessages.size())));
@@ -31,18 +33,18 @@ public class TipsManager implements Listener {
                 RunicRestart.getInstance().getConfig().getInt("tips.interval") * 20L);
     }
 
-    public static Set<UUID> getTips() {
+    public Set<UUID> getTips() {
         return tips;
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        RunicCommon.getLuckPermsAPI().retrieveData(event.getPlayer().getUniqueId()).thenAccept((data) -> {
+        RunicAPI.getLuckPermsAPI().retrieveData(event.getPlayer().getUniqueId()).thenAccept((data) -> {
             if (data.containsKey("runic.tips") && data.getBoolean("runic.tips")) {
                 tips.add(event.getPlayer().getUniqueId());
             } else if (!data.containsKey("runic.tips")) {
                 tips.add(event.getPlayer().getUniqueId());
-                RunicCommon.getLuckPermsAPI().savePayload(RunicCommon.getLuckPermsAPI().createPayload(event.getPlayer().getUniqueId(), (saveData) -> saveData.set("runic.tips", true)));
+                RunicAPI.getLuckPermsAPI().savePayload(RunicAPI.getLuckPermsAPI().createPayload(event.getPlayer().getUniqueId(), (saveData) -> saveData.set("runic.tips", true)));
             }
         });
     }
